@@ -14,7 +14,7 @@
 }
 /* ============ 2. BASE ============ */
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden}
 body{font-family:var(--fuente);background:var(--fondo);color:var(--texto);line-height:1.5;overflow-x:hidden}
 body.cerrado{overflow:hidden;height:100svh}
 img{display:block;max-width:100%}
@@ -68,7 +68,7 @@ h1,h2{font-weight:900;font-style:italic;letter-spacing:-.02em;line-height:1.02}
 .orbita{position:absolute;width:var(--d);height:var(--d);left:calc(var(--d)/-2);top:calc(var(--d)/-2);border-radius:50%;
   border:1px dashed rgba(120,160,255,.28);animation:gira var(--t) linear infinite var(--sa)}
 .hueco{position:absolute;inset:0;transform:rotate(var(--a))}
-.hueco .carro{position:absolute;left:50%;top:0;width:var(--s);transform:translate(-50%,-50%) rotate(calc(var(--a) * -1))}
+.hueco .carro{position:absolute;left:50%;top:0;width:calc(var(--s) * var(--k,1));transform:translate(-50%,-50%) rotate(calc(var(--a) * -1))}
 .hueco img{width:100%;animation:gira var(--t) linear infinite var(--sb);filter:drop-shadow(0 6px 10px rgba(0,0,0,.6)) var(--f,)}
 @keyframes gira{to{transform:rotate(360deg)}}
 .foto{-webkit-mask-image:radial-gradient(ellipse at center,#000 55%,transparent 74%);mask-image:radial-gradient(ellipse at center,#000 55%,transparent 74%)}
@@ -92,9 +92,9 @@ h1,h2{font-weight:900;font-style:italic;letter-spacing:-.02em;line-height:1.02}
 /* ============ 7. COLECCIÓN ============ */
 .coleccion{background:linear-gradient(180deg,transparent,rgba(10,16,48,.85) 20%,rgba(10,16,48,.85) 80%,transparent)}
 .rejilla{max-width:1000px;margin:36px auto 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px;list-style:none}
-.rejilla li{display:grid;place-items:center;aspect-ratio:4/3;padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(120,160,255,.2);transition:transform .25s,border-color .25s}
+.rejilla li{position:relative;min-width:0;aspect-ratio:4/3;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid rgba(120,160,255,.2);transition:transform .25s,border-color .25s}
 .rejilla li:hover{transform:translateY(-5px) rotate(-1.5deg);border-color:var(--amarillo)}
-.rejilla img{max-height:100%;object-fit:contain}
+.rejilla img{position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px);max-width:none;object-fit:contain}
 
 /* ============ 8. CIERRE Y WHATSAPP ============ */
 .cierre{text-align:center}
@@ -105,7 +105,7 @@ body:not(.cerrado) .wa-flotante{opacity:1;pointer-events:auto}
 .wa-flotante svg{width:32px;height:32px;fill:#fff}
 
 /* ============ 9. RESPONSIVE Y ACCESIBILIDAD ============ */
-@media (max-width:600px){.rejilla{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:600px){:root{--k:1.4}.rejilla{grid-template-columns:repeat(2,minmax(0,1fr))}.grande{width:42vmin;left:-21vmin;top:-21vmin}.centro{top:54%}}
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition-duration:.01s!important;transition-delay:0s!important}
   #cruces{display:none}
@@ -199,7 +199,7 @@ const base=[...IM.keys()].filter(i=>i!==CENTRO);
 const orb=base.map(i=>({i,h:null}));
 HUES.forEach((h,k)=>orb.push({i:base[(k*2+1)%base.length],h}));
 const filtro=h=>h===null?'':`hue-rotate(${h}deg)`;
-const mk=(o,cls)=>{const im=document.createElement('img');im.src=IM[o.i];im.alt=ALT[o.i];im.loading='lazy';
+const mk=(o,cls)=>{const im=document.createElement('img');im.src=IM[o.i];im.alt=ALT[o.i];
   if(o.i===FOTO)im.className='foto'; if(o.h!==null)im.style.setProperty('--f',filtro(o.h)); return im;};
 
 document.getElementById('img-grande').src=IM[CENTRO];
@@ -242,6 +242,9 @@ document.getElementById('abrir').addEventListener('click',()=>{
   document.getElementById('universo').classList.add('on');
   window.scrollTo(0,0);
 });
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
